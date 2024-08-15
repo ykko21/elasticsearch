@@ -1,0 +1,169 @@
+# Compound query
+# using bool and must or should
+# Leaf Query: single query with term
+# Compound query: query containing multiple term level query or combination of term level or other compound queries
+GET /products/_search
+GET /orders/_search
+GET /recipes/_search
+
+PUT /order
+
+GET /products/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "tags.keyword": "Alcohol"
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET /products/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "tags.keyword": "Alcohol"
+          }
+        }
+      ],
+      "must_not": [
+        {
+          "term": {
+            "tags.keyword": "Wine"
+          }
+        }
+      ],
+      "should": [
+        {
+          "term": {
+            "tags.keyword": "Beer"
+          }
+        },
+        {
+          "match": {
+            "name": "beer"
+          }
+        },
+        {
+          "match": {
+            "description": "beer"
+          }
+        }
+      ]
+    }
+  }
+}
+
+# list documents matching one of term or match
+GET /products/_search
+{
+  "query": {
+    "bool": {
+      "should": [
+        {
+          "term": {
+            "tags.keyword": "Beer"
+          }
+        },
+        {
+          "match": {
+            "name": "beer"
+          }
+        }
+      ]
+    }
+  }
+}
+
+# default: implicit - minimum_should_match:0
+GET /products/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "tags.keyword": "Alcohol"
+          }
+        }
+      ],
+      "should": [
+        {
+          "term": {
+            "tags.keyword": "Beer"
+          }
+        },
+        {
+          "match": {
+            "name": "beer"
+          }
+        }
+      ]
+    }
+  }
+}
+
+GET /products/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "tags.keyword": "Alcohol"
+          }
+        }
+      ],
+      "should": [
+        {
+          "term": {
+            "tags.keyword": "Beer"
+          }
+        },
+        {
+          "match": {
+            "name": "beer"
+          }
+        }
+      ],
+      "minimum_should_match": 0
+    }
+  }
+}
+
+
+GET /products/_search
+{
+  "query": {
+    "bool": {
+      "must": [
+        {
+          "term": {
+            "tags.keyword": "Alcohol"
+          }
+        }
+      ],
+      "should": [
+        {
+          "term": {
+            "tags.keyword": "Beer"
+          }
+        },
+        {
+          "match": {
+            "name": "beer"
+          }
+        }
+      ],
+      "minimum_should_match": 1
+    }
+  }
+}
