@@ -1,0 +1,4 @@
+# total_pages = ceil(total_hits / page_size)
+# 14 = ceil(137 / 10)
+# from = (page_size * (page_number -1))
+# 50 = (10 * (6 - 1))
