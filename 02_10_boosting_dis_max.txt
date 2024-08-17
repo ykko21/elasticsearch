@@ -1,0 +1,76 @@
+GET /products/_search
+{
+  "size": 20,
+  "query": {
+    "boosting": {
+      "positive": {
+        "match": {
+          "name": "juice"
+        }
+      },
+      "negative": {
+        "match": {
+          "name": "apple"
+        }
+      },
+      "negative_boost": 0.5
+    }
+  }
+}
+
+GET /products/_search
+{
+  "query" : {
+    "boosting": {
+      "positive": {
+        "bool": {
+          "must": {
+            { 
+              "match_all": {} 
+            }
+          },
+          "should": [
+            {
+              "match": {
+                "name": "juice"
+              }
+            }
+          ]
+        }
+      },
+      "negative": {
+        "term": {
+          "name": "bacon"
+        }
+      },
+      "negative_boost": 0.5
+    }
+  }
+}
+
+# multi_match vs dis_max
+# multi_match
+# multi_match is internally converted to dis_max
+GET /products/_search
+{
+  "query": {
+    "multi_match": {
+      "query": "vegetable",
+      "fields": ["name", "tags"],
+      "tie_breaker": 0.3
+    }
+  }
+}
+
+GET /products/_search
+{
+  "query": {
+    "dis_max": {
+      "queries": [
+        { "match": { "name": "vegetable" } },
+        { "match": { "tags": "vegetable" } }
+      ],
+      "tie_breaker": 0.3
+    }
+  }
+}
